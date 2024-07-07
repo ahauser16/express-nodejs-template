@@ -1,0 +1,3 @@
+# notes on `item.js` and the `models` folder
+
+For a Node.js and Express project, a common approach is to separate your concerns into different folders such as models, routes, controllers, utilities, and middleware. Since `item.js` is essentially a model representing the data structure and potentially some business logic for items, it would be best to create a `models` folder within your `src` directory. This way, you can keep all your models organized in one place, and it will be easier to manage as your project grows and you add more models.
