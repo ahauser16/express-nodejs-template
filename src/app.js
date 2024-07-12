@@ -4,18 +4,18 @@ const app = express();
 const ExpressError = require('./utils/expressError');
 const middleware = require('./utils/middleware');
 
-const itemRoutes = require('./routes/itemRoutes');
+// const itemRoutes = require('./routes/itemRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 app.use(express.json());
 
 // app.use(middleware.logger);
 
-app.use('/items', itemRoutes);
+// app.use('/items', itemRoutes);
 app.use('/users', userRoutes);
 
 app.get('/', (req, res) => {
-    res.send('Welcome to the Express Shopping List!');
+    res.send('Welcome to the template!');
 });
 
 app.get('/secret', middleware.checkForPassword, (req, res, next) => {
@@ -27,7 +27,8 @@ app.get('/private', middleware.checkForPassword, (req, res, next) => {
 })
 
 app.use((req, res, next) => {
-    return new ExpressError('Page Not Found', 404);
+    const err = new ExpressError('Page Not Found', 404);
+    next(err);
 });
 
 app.use((err, req, res, next) => {

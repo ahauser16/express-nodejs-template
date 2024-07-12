@@ -1,115 +1,74 @@
-# Express Shopping List
+# Node JS Curriculum Template
 
-This is a simple calculator application built using Express.js. It allows users to perform basic mathematical operations such as addition, subtraction, multiplication, and division.
+This application follows the curriculum starting with the intermediate express lessons which I can use for the homework at the end of units. I've left some of the code in as placeholders and for my own notes.
 
 # Table of Contents
 
-- [Express Shopping List](#express-shopping-list)
+- [Node JS Curriculum Template](#node-js-curriculum-template)
 - [Table of Contents](#table-of-contents)
-  - [I. Exercise Instructions](#i-exercise-instructions)
-    - [**Further Study**](#further-study)
-  - [II. Steps taken to create this project](#ii-steps-taken-to-create-this-project)
-    - [1. Ubuntu/WSL exclusive:](#1-ubuntuwsl-exclusive)
-      - [View of VSC BEFORE running `code .` in the WSL terminal:](#view-of-vsc-before-running-code--in-the-wsl-terminal)
-      - [View of VSC AFTER running `code .` in the WSL terminal:](#view-of-vsc-after-running-code--in-the-wsl-terminal)
-    - [2. Initialize Node.js](#2-initialize-nodejs)
-    - [3. Install Express and Nodemon:](#3-install-express-and-nodemon)
-    - [4. Set Up `app.js` and `server.js`:](#4-set-up-appjs-and-serverjs)
+  - [I. Steps taken to create this project](#i-steps-taken-to-create-this-project)
+    - [**1. Ubuntu/WSL exclusive**](#1-ubuntuwsl-exclusive)
+      - [**(a)** View of VSC BEFORE running `code .` in the WSL terminal:](#a-view-of-vsc-before-running-code--in-the-wsl-terminal)
+      - [**(b)** View of VSC AFTER running `code .` in the WSL terminal:](#b-view-of-vsc-after-running-code--in-the-wsl-terminal)
+    - [**2. Initialize Node.js**](#2-initialize-nodejs)
+    - [**3. Dependencies or installation commands I used while working on this project**](#3-dependencies-or-installation-commands-i-used-while-working-on-this-project)
+    - [4. `app.js` and `server.js` architecture](#4-appjs-and-serverjs-architecture)
     - [5. Implement Routes and Utilities in `app.js`:](#5-implement-routes-and-utilities-in-appjs)
-    - [6. Create and update `.gitignore`:](#6-create-and-update-gitignore)
-    - [7. Write unit tests:](#7-write-unit-tests)
-      - [Common HTTP status codes](#common-http-status-codes)
+    - [6. How `.gitignore` is configured:](#6-how-gitignore-is-configured)
+    - [7. Unit Test Related](#7-unit-test-related)
+      - [question on how testing works](#question-on-how-testing-works)
     - [8. Run Your Server:](#8-run-your-server)
-  - [Installation](#installation)
-  - [Usage](#usage)
+  - [II. Installation](#ii-installation)
+  - [III. Usage](#iii-usage)
     - [Starting the server](#starting-the-server)
     - [Run your tests](#run-your-tests)
-  - [Notes from solution:](#notes-from-solution)
-    - [Error Handling](#error-handling)
+  - [IV. Environment Variables \& Setup](#iv-environment-variables--setup)
+  - [V. Database Configuration](#v-database-configuration)
+  - [VI. Commands and Scripts you MUST know](#vi-commands-and-scripts-you-must-know)
+    - [`npm run test`](#npm-run-test)
+      - [What it does:](#what-it-does)
+      - [When to use it:](#when-to-use-it)
+      - [How it works:](#how-it-works)
+        - [1. Environment Variable Setting](#1-environment-variable-setting)
+        - [2. Conditional Database URI Selection](#2-conditional-database-uri-selection)
+        - [3. Database Connection](#3-database-connection)
+        - [4. Test Execution](#4-test-execution)
+      - [Why it's helpful](#why-its-helpful)
+        - [1. Isolation](#1-isolation)
+        - [2. Consistency](#2-consistency)
+        - [3. Performance](#3-performance)
+        - [4. Safety](#4-safety)
+        - [5. Environment-specific Configuration](#5-environment-specific-configuration)
+        - [6. Dependency Mocking](#6-dependency-mocking)
+        - [7. Continuous Integration (CI) Compatibility](#7-continuous-integration-ci-compatibility)
+    - [`npm start`](#npm-start)
+    - [`npm run debug`](#npm-run-debug)
+    - [`npm run dev`](#npm-run-dev)
+    - [`npm run dev:test`](#npm-run-devtest)
 
-## I. Exercise Instructions
+## I. Steps taken to create this project
 
-For this exercise we will be building a simple JSON API application where we will store a shopping list. You should use an **array** to store your items in the shopping list.
+### **1. Ubuntu/WSL exclusive**
 
-Each item should be a JavaScript object with the keys of name, and price.
+I found that in order to use Node JS in my Ubuntu environment I had to (i) create the project folder locally, (ii) open that folder in VS Code, (iii) open the WSL terminal and (iv) run the command `code .` which would open the same project in a new VSC window with a different terminal and WSL display.  Below are the **before** and **after** screenshots in that order.  *NB* I found that I was able to troubleshoot more easily after going through this process over and over as opposed to just using the terminal shown in the **before** screenshot.
 
-Remember that since you are using an **array** for storage, this will be cleared each time the server restarts. Create a simple file called **_fakeDb.js_** which contains the following:
-
-```
-global.items = []
-
-module.exports = items
-```
-
-Use this list of **_items_** in your routes and test files.
-
-Your application should have the following routes:
-
-1. **_GET /items_** - this should render a list of shopping items.
-
-Here is what a response looks like:
-
-**[{“name”: “popsicle”, “price”: 1.45}, {“name”:”cheerios”, “price”: 3.40}]**
-
-1. **_POST /items_** - this route should accept JSON data and add it to the shopping list.
-
-Here is what a sample request/response looks like:
-
-**{“name”:”popsicle”, “price”: 1.45} => {“added”: {“name”: “popsicle”, “price”: 1.45}}**
-
-1. **_GET /items/:name_** - this route should display a single item’s name and price.
-
-Here is what a sample response looks like:
-
-**{“name”: “popsicle”, “price”: 1.45}**
-
-1. **_PATCH /items/:name_**, this route should modify a single item’s name and/or price.
-
-Here is what a sample request/response looks like:
-
-**{“name”:”new popsicle”, “price”: 2.45} => {“updated”: {“name”: “new popsicle”, “price”: 2.45}}**
-
-1. **_DELETE /items/:name_** - this route should allow you to delete a specific item from the array.
-
-Here is what a sample response looks like:
-
-**{message: “Deleted”}**
-
-Please make use of the Express Router.
-
-Warning: STOP and make sure your routes are tested! Make sure you have tested all of these routes with Jest and Supertest.
-
-### **Further Study**
-
-1. Make your own data store! Read/Write to a JSON file instead of using an array for storage.
-2. Use OOP to help refactor your logic for reading/writing. This is almost like building your own ORM!
-3. Build a front-end that interacts with your API. This will involve figuring out how to load static assets with express. Try doing this in jQuery, or vanilla JavaScript (ultra challenge)!
-
-[Back to TOC](#table-of-contents)
-
-## II. Steps taken to create this project
-
-### 1. Ubuntu/WSL exclusive:
-
-I found that in order to use Node JS in my Ubuntu environment I had to create the project folder locally, open that folder in VS Code, open the WSL terminal and run the command `code .` which would open a new VSC window with a different terminal and WSL notation display (see below).
-
-#### View of VSC BEFORE running `code .` in the WSL terminal:
+#### **(a)** View of VSC BEFORE running `code .` in the WSL terminal:
 
 ![Before](src/assets/images/VSC%20screenshot_before.png)
 
-#### View of VSC AFTER running `code .` in the WSL terminal:
+#### **(b)** View of VSC AFTER running `code .` in the WSL terminal:
 
 ![After](src/assets/images/VSC%20screenshot_after.png)
 
 [Back to TOC](#table-of-contents)
 
-### 2. Initialize Node.js
+### **2. Initialize Node.js**
 
 Run `npm init -y` to create a `package.json` file with default values.
 
 [Back to TOC](#table-of-contents)
 
-### 3. Install Express and Nodemon:
+### **3. Dependencies or installation commands I used while working on this project**
 
 In the same directory, run `npm install express` to install Express and add it to your project's dependencies.
 
@@ -121,7 +80,7 @@ In the same directory, run `npm install --save-dev jest` to install Jest and add
 
 [Back to TOC](#table-of-contents)
 
-### 4. Set Up `app.js` and `server.js`:
+### 4. `app.js` and `server.js` architecture
 
 `app.js`:
 
@@ -245,62 +204,25 @@ app.use((err, req, res, next) => {
 module.exports = app;
 ```
 
-### 6. Create and update `.gitignore`:
+### 6. How `.gitignore` is configured:
 
-- Make sure to include `node_modules/` and any environment files (like `.env`) in your `.gitignore` file to avoid committing them to version control.
+In this project, the `.gitignore` file is used to specify intentionally untracked files that Git should ignore. Files already tracked by Git are not affected. The configuration helps in keeping the repository clean by excluding files that are not necessary to be shared with others or that can be generated from the source code. Here's how it's set up:
+
+-**(a)** `node_modules/`: This directory contains all the packages and their dependencies installed via npm. Since these dependencies can be installed by running `npm install`, there's no need to include them in the repository. Ignoring this folder reduces the size of the project and avoids potential conflicts between different developers' environments.
+
+-**(b)** `.env`: Environment variables are crucial for configuring the application in different environments (development, testing, production, etc.). They often contain sensitive information, such as database passwords or API keys, that should not be shared publicly. By ignoring the `.env` file, we ensure that these details are kept secure and must be set up individually by each developer.
+
+Including these two entries in the `.gitignore` file ensures that our repository remains clean and secure. It's a best practice to update this file as the project evolves and new files or directories need to be excluded from version control.
 
 [Back to TOC](#table-of-contents)
 
-### 7. Write unit tests:
+### 7. Unit Test Related
 
-Update your `package.json` to include a test script `"test": "jest"`.
+#### question on how testing works
 
-Based on common and best practices, here's a list of tests you should consider for your `itemRoutes.js` file:
+my question: how is the mockItems array helping in testing the route? If we're mocking the item.js module and using the findAll method on the mockItems array then what is truly being tested? If we subsitute the retrieval of the items array from fakeDb for a mockItems array then how is this test testing if this route is retrieving data in a realistic scenario?
 
-1. GET /items
-   Test for a successful response (status code 200).
-   Test that the response is an array.
-   Test that the array contains objects with the expected properties (`name` and `price`).
-
-2. POST /items
-   Test for successful item creation (status code 201).
-   Test for the response body to contain the added item object.
-   Test for handling missing item data (e.g., missing `name` or `price`), expecting a 400 or similar error code.
-
-3. GET /items/:name
-   Test for a successful response (status code 200) with the correct item.
-   Test for a response when the item does not exist (status code 404 or similar).
-
-4. PATCH /items/:name
-   Test for successful item update (status code 200).
-   Test for the response body to contain the updated item object.
-   Test for handling updates to non-existing items (status code 404 or similar).
-
-5. DELETE /items/:name
-   Test for successful item deletion (status code 200 or 204).
-   Test for handling deletion of non-existing items (status code 404 or similar).
-
-#### Common HTTP status codes
-
-- `200 OK` - The request has succeeded.
-- `201 Created` - The request has succeeded and a new resource has been created as a result.
-- `202 Accepted` - The request has been received but not yet acted upon; it is non-committal.
-- `204 No Content` - The server successfully processed the request, but is not returning any content.
-- `400 Bad Request` - The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax).
-- `401 Unauthorized` - The request has not been applied because it lacks valid authentication credentials for the target resource.
-- `403 Forbidden` - The server understood the request but refuses to authorize it.
-- `404 Not Found` - The server can't find the requested resource.
-- `405 Method Not Allowed` - The request method is known by the server but has been disabled and cannot be used.
-- `408 Request Timeout` - The server would like to shut down this unused connection.
-- `500 Internal Server Error` - The server encountered an unexpected condition that prevented it from fulfilling the request.
-- `501 Not Implemented` - The server does not support the functionality required to fulfill the request.
-- `502 Bad Gateway` - The server, while acting as a gateway or proxy, received an invalid response from the upstream server.
-- `503 Service Unavailable` - The server is not ready to handle the request, usually due to temporary overloading or maintenance.
-- `504 Gateway Timeout` - The server, while acting as a gateway or proxy, did not receive a timely response from the upstream server.
-
-- NB --> my question: how is the mockItems array helping in testing the route? If we're mocking the item.js module and using the findAll method on the mockItems array then what is truly being tested? If we subsitute the retrieval of the items array from fakeDb for a mockItems array then how is this test testing if this route is retrieving data in a realistic scenario?
-
-- answer: The mockItems array in the test serves several purposes:
+answer: The mockItems array in the test serves several purposes:
 
 1. Isolation: By using mockItems, the test isolates the route handling from the actual data access layer. This means the test isn't dependent on the state of an external database or data structure, making the test more reliable and faster to execute.
 
@@ -312,11 +234,11 @@ However, your concern about realism in testing is valid. Mocking the Item.findAl
 
 To address this and add more realism to your tests, you could:
 
-- Integration Tests: Write separate integration tests that interact with the actual fakeDb or a test database. These tests would verify that the route correctly retrieves and manipulates data in a more realistic scenario.
+1. Integration Tests: Write separate integration tests that interact with the actual fakeDb or a test database. These tests would verify that the route correctly retrieves and manipulates data in a more realistic scenario.
 
-- End-to-End Tests: Implement end-to-end tests that simulate real user interactions from the front end through the back end to the database and back. This would test the entire stack, including the route, in a real-world scenario.
+2. End-to-End Tests: Implement end-to-end tests that simulate real user interactions from the front end through the back end to the database and back. This would test the entire stack, including the route, in a real-world scenario.
 
-- Hybrid Approach: Use mocking for unit tests to ensure route logic is correct while relying on integration and end-to-end tests for testing the interaction with the database and the overall application flow.
+3. Hybrid Approach: Use mocking for unit tests to ensure route logic is correct while relying on integration and end-to-end tests for testing the interaction with the database and the overall application flow.
 
 In summary, while mocking with mockItems is beneficial for isolating and focusing on testing the route's logic, it's also important to complement these tests with integration and end-to-end tests to ensure the application works as expected in real-world scenarios.
 
@@ -331,7 +253,7 @@ This guide sets up a basic Express project structure. You can expand it by addin
 
 [Back to TOC](#table-of-contents)
 
-## Installation
+## II. Installation
 
 1. Clone the repository: `git clone https://github.com/ahauser16/express-shopping-list.git`
 2. Navigate to the project directory: `cd express-shopping-list`
@@ -339,7 +261,7 @@ This guide sets up a basic Express project structure. You can expand it by addin
 
 [Back to TOC](#table-of-contents)
 
-## Usage
+## III. Usage
 
 ### Starting the server
 
@@ -357,119 +279,128 @@ This guide sets up a basic Express project structure. You can expand it by addin
 
 [Back to TOC](#table-of-contents)
 
-## Notes from solution:
+## IV. Environment Variables & Setup
+
+To ensure that your application connects to the correct database, you need to set up environment variables. This application uses two databases: one for development and another for testing. Follow these steps to set up your environment variables:
+
+1. `.env` File: Your environment variables are stored in the `.env` file at the root of your project. This file includes variables for the development and test databases, as well as the environment mode (`NODE_ENV`). Here's how it's set up:
+
+   ```
+   NODE_ENV=development
+   DB_URI=postgresql:///your_database_name
+   TEST_DB_URI=postgresql:///your_test_database_name
+   ```
+
+2. Ignoring `.env` in Version Control: The `.gitignore` file includes `.env` to ensure that your environment variables are not committed to your version control system, keeping sensitive information secure.
 
 ```
-items.test.js
-
-process.env.NODE_ENV = "test";
-// npm packages
-const request = require("supertest");
-// app imports
-const app = require("../app");
-
-let items = require("../fakeDb")
-
-let item = { name: "silly", price:200 }
-
-beforeEach(async () => {
-  items.push(item)
-});
-
-afterEach(async () => {
-  items = []
-});
-// end afterEach
-
-/** GET /items - returns `{items: [item, ...]}` */
-
-describe("GET /items", async function () {
-  test("Gets a list of items", async function () {
-    const response = await request(app).get(`/items`);
-    const { items } = response.body;
-    expect(response.statusCode).toBe(200);
-    expect(items).toHaveLength(1);
-  });
-});
-// end
-
-
-/** GET /items/[name] - return data about one item: `{item: item}` */
-
-describe("GET /items/:name", async function () {
-  test("Gets a single item", async function () {
-    const response = await request(app).get(`/items/${item.name}`);
-    expect(response.statusCode).toBe(200);
-    expect(response.body.item).toEqual(item);
-  });
-
-  test("Responds with 404 if can't find item", async function () {
-    const response = await request(app).get(`/items/0`);
-    expect(response.statusCode).toBe(404);
-  });
-});
-// end
-
-
-/** POST /items - create item from data; return `{item: item}` */
-
-describe("POST /items", async function () {
-  test("Creates a new item", async function () {
-    const response = await request(app)
-      .post(`/items`)
-      .send({
-        name: "Taco",
-        price: 0
-      });
-    expect(response.statusCode).toBe(200);
-    expect(response.body.item).toHaveProperty("name");
-    expect(response.body.item).toHaveProperty("price");
-    expect(response.body.item.name).toEqual("Taco");
-    expect(response.body.item.price).toEqual(0);
-  });
-});
-// end
-
-
-/** PATCH /items/[name] - update item; return `{item: item}` */
-
-describe("PATCH /items/:name", async function () {
-  test("Updates a single item", async function () {
-    const response = await request(app)
-      .patch(`/items/${item.name}`)
-      .send({
-        name: "Troll"
-      });
-    expect(response.statusCode).toBe(200);
-    expect(response.body.item).toEqual({
-      name: "Troll"
-    });
-  });
-
-  test("Responds with 404 if can't find item", async function () {
-    const response = await request(app).patch(`/items/0`);
-    expect(response.statusCode).toBe(404);
-  });
-});
-// end
-
-
-/** DELETE /items/[name] - delete item, 
- *  return `{message: "item deleted"}` */
-
-describe("DELETE /items/:name", async function () {
-  test("Deletes a single a item", async function () {
-    const response = await request(app)
-      .delete(`/items/${item.name}`);
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual({ message: "Deleted" });
-  });
-});
-// end
-
-
+node_modules/
+.env
 ```
 
-### Error Handling
+## V. Database Configuration
+
+1. `db.js`: This file configures the database connection using the `pg` library. It selects the correct database URI based on the `NODE_ENV` variable. This setup allows you to switch between your development and test databases seamlessly.
+
+```
+const { Client } = require("pg");
+const DB_URI = process.env.NODE_ENV === "test" ? process.env.TEST_DB_URI : process.env.DB_URI;
+
+const db = new Client({
+    connectionString: DB_URI
+});
+
+db.connect(err => {
+    if (err) {
+        console.error("Connection error", err.stack);
+    } else {
+        console.log("Connected to database:", DB_URI);
+    }
+});
+
+module.exports = db;
+```
+
+## VI. Commands and Scripts you MUST know
+
+This project includes several npm scripts to facilitate development, testing, and debugging. Below are the instructions for using these scripts:
+
+### `npm run test`
+
+#### What it does:
+Sets the `NODE_ENV` environment variable to `test` and runs tests using Jest. This ensures that your application connects to the test database.
+
+#### When to use it: 
+Run this command when you want to execute your test suite. It's especially useful to ensure that all tests pass before pushing changes to your version control system.
+
+#### How it works:
+
+##### 1. Environment Variable Setting
+
+The `npm run test` command in the `package.json` file is configured to set the `NODE_ENV` environment variable to `test` before running the tests with Jest.  Keep in mind that this command explicitly sets `NODE_ENV` to `test`, which is crucial for the next step.
+
+```
+"test": "NODE_ENV=test jest"
+```
+
+##### 2. Conditional Database URI Selection
+
+In the `db.js` file, the database URI is selected based on the value of `NODE_ENV`. If `NODE_ENV` is set to `test`, it uses `process.env.TEST_DB_URI;` otherwise, it defaults to `process.env.DB_URI` for development or production environments:
+
+```
+const DB_URI = process.env.NODE_ENV === "test" ? process.env.TEST_DB_URI : process.env.DB_URI;
+```
+
+This means that when NODE_ENV is test, the connection string for the test database is used.
+
+##### 3. Database Connection
+With the correct `DB_URI` selected, the `db` object is configured to connect to the specified database. This ensures that all database operations performed during the tests are executed against the test database, isolating test data from development or production data.
+
+##### 4. Test Execution
+With the environment correctly set up and the application connected to the test database, Jest runs the test suite. This setup ensures that your tests interact with the intended test database, providing a consistent and isolated environment for accurate testing.
+
+#### Why it's helpful 
+Running tests on a test database while the `NODE_ENV` environment variable is set to `test` offers several benefits:
+
+##### 1. Isolation
+It ensures that the tests do not interfere with production data or the development database, maintaining data integrity and preventing accidental data loss or corruption.
+
+##### 2. Consistency
+By using a dedicated test database, you can ensure that the tests start with a known database state, which is crucial for repeatability and reliability of test results.
+
+##### 3. Performance
+Test databases can be optimized for speed, allowing for faster test execution. This is because they can be smaller and not carry the overhead of production-level data and logging.
+
+##### 4. Safety
+It prevents accidental execution of potentially destructive operations on the production database, such as deletions or updates.
+
+##### 5. Environment-specific Configuration
+Setting `NODE_ENV` to `test` allows for custom configuration (like database connection strings, logging levels, or third-party service mocks) that are specific to the testing environment, ensuring that tests run under conditions similar to production but without the risk.
+
+##### 6. Dependency Mocking
+In a test environment, it's easier to mock external services and integrations, ensuring that the tests are not dependent on external factors and are more focused on the application logic itself.
+
+##### 7. Continuous Integration (CI) Compatibility
+Using a test database and environment makes it easier to integrate with CI/CD pipelines, ensuring that automated tests can run in an isolated and controlled environment before any code is deployed to production.
 
 
+
+### `npm start`
+
+- **What it does:** Starts the server normally for production or general development use.
+- **When to use it:** Use this command to start your application in a production environment or when you're not actively developing and just want to run the application.
+
+### `npm run debug`
+
+- **What it does:** Sets the `NODE_ENV` environment variable to `development` and starts the server with the `nodemon` tool in debug mode (`--inspect`). This allows you to attach a debugger to the running process for more in-depth troubleshooting.
+- **When to use it:** This command is useful when you need to debug your application and want to use a debugger to step through your code.
+
+### `npm run dev`
+
+- **What it does:** Sets the `NODE_ENV` environment variable to `development` and uses `nodemon` for automatic server restarts during development. This means that the server will automatically restart whenever you save changes to your files.
+- **When to use it:** Use this command during development for a smoother workflow. It saves you from having to manually restart the server each time you make changes to your code.
+
+### `npm run dev:test`
+
+- **What it does:** Similar to `npm run test`, it sets the `NODE_ENV` environment variable to `test` but uses `nodemon` to automatically restart the test suite on file changes.
+- **When to use it:** This command is particularly useful during test-driven development (TDD) or when you are actively working on fixing tests. It provides immediate feedback by re-running tests as soon as you save changes.
