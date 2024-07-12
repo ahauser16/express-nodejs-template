@@ -24,27 +24,24 @@ This application follows the curriculum starting with the intermediate express l
     - [Run your tests](#run-your-tests)
   - [IV. Environment Variables \& Setup](#iv-environment-variables--setup)
   - [V. Database Configuration](#v-database-configuration)
-  - [VI. Commands and Scripts you MUST know](#vi-commands-and-scripts-you-must-know)
-    - [`npm run test`](#npm-run-test)
-      - [What it does:](#what-it-does)
-      - [When to use it:](#when-to-use-it)
-      - [How it works:](#how-it-works)
-        - [1. Environment Variable Setting](#1-environment-variable-setting)
-        - [2. Conditional Database URI Selection](#2-conditional-database-uri-selection)
-        - [3. Database Connection](#3-database-connection)
-        - [4. Test Execution](#4-test-execution)
-      - [Why it's helpful](#why-its-helpful)
-        - [1. Isolation](#1-isolation)
-        - [2. Consistency](#2-consistency)
-        - [3. Performance](#3-performance)
-        - [4. Safety](#4-safety)
-        - [5. Environment-specific Configuration](#5-environment-specific-configuration)
-        - [6. Dependency Mocking](#6-dependency-mocking)
-        - [7. Continuous Integration (CI) Compatibility](#7-continuous-integration-ci-compatibility)
-    - [`npm start`](#npm-start)
-    - [`npm run debug`](#npm-run-debug)
-    - [`npm run dev`](#npm-run-dev)
-    - [`npm run dev:test`](#npm-run-devtest)
+  - [VI. Commands and Scripts you **MUST** know to run this application](#vi-commands-and-scripts-you-must-know-to-run-this-application)
+    - [A. `npm run test`](#a-npm-run-test)
+        - [a. Environment Variable Setting](#a-environment-variable-setting)
+        - [b. Conditional Database URI Selection](#b-conditional-database-uri-selection)
+        - [c. Database Connection](#c-database-connection)
+        - [d. Test Execution](#d-test-execution)
+      - [(iv) Why it's helpful](#iv-why-its-helpful)
+        - [a. Isolation](#a-isolation)
+        - [b. Consistency](#b-consistency)
+        - [c. Performance](#c-performance)
+        - [d. Safety](#d-safety)
+        - [e. Environment-specific Configuration](#e-environment-specific-configuration)
+        - [f. Dependency Mocking](#f-dependency-mocking)
+        - [g. Continuous Integration (CI) Compatibility](#g-continuous-integration-ci-compatibility)
+    - [B. `npm start`](#b-npm-start)
+    - [C. `npm run debug`](#c-npm-run-debug)
+    - [D. `npm run dev`](#d-npm-run-dev)
+    - [E. `npm run dev:test`](#e-npm-run-devtest)
 
 ## I. Steps taken to create this project
 
@@ -321,86 +318,84 @@ db.connect(err => {
 module.exports = db;
 ```
 
-## VI. Commands and Scripts you MUST know
+## VI. Commands and Scripts you **MUST** know to run this application
 
 This project includes several npm scripts to facilitate development, testing, and debugging. Below are the instructions for using these scripts:
 
-### `npm run test`
+### A. `npm run test`
 
-#### What it does:
+- #### (i) What it does:
 Sets the `NODE_ENV` environment variable to `test` and runs tests using Jest. This ensures that your application connects to the test database.
 
-#### When to use it: 
+- #### (ii) When to use it: 
 Run this command when you want to execute your test suite. It's especially useful to ensure that all tests pass before pushing changes to your version control system.
 
-#### How it works:
+- #### (iii) How it works:
+##### a. Environment Variable Setting
 
-##### 1. Environment Variable Setting
+The `npm run test` command in the `package.json` file is configured to set the `NODE_ENV` environment variable to `test` before running the tests with Jest (`"test": "NODE_ENV=test jest"`).  Keep in mind that this command explicitly sets `NODE_ENV` to `test`, which is crucial for the next step.
+##### b. Conditional Database URI Selection
 
-The `npm run test` command in the `package.json` file is configured to set the `NODE_ENV` environment variable to `test` before running the tests with Jest.  Keep in mind that this command explicitly sets `NODE_ENV` to `test`, which is crucial for the next step.
+In the `db.js` file, the database URI is selected based on the value of `NODE_ENV`. If `NODE_ENV` is set to `test`, it uses `process.env.TEST_DB_URI;` otherwise, it defaults to `process.env.DB_URI` for development or production environments: `const DB_URI = process.env.NODE_ENV === "test" ? process.env.TEST_DB_URI : process.env.DB_URI;`.  This means that when `NODE_ENV` is equal to `test`, the connection string for the test database is used.
 
-```
-"test": "NODE_ENV=test jest"
-```
+##### c. Database Connection
+With the correct `DB_URI` selected, the `db` object is configured to connect to the specified database. This ensures that all database operations performed during the tests are executed against the test database, isolating 
 
-##### 2. Conditional Database URI Selection
-
-In the `db.js` file, the database URI is selected based on the value of `NODE_ENV`. If `NODE_ENV` is set to `test`, it uses `process.env.TEST_DB_URI;` otherwise, it defaults to `process.env.DB_URI` for development or production environments:
-
-```
-const DB_URI = process.env.NODE_ENV === "test" ? process.env.TEST_DB_URI : process.env.DB_URI;
-```
-
-This means that when NODE_ENV is test, the connection string for the test database is used.
-
-##### 3. Database Connection
-With the correct `DB_URI` selected, the `db` object is configured to connect to the specified database. This ensures that all database operations performed during the tests are executed against the test database, isolating test data from development or production data.
-
-##### 4. Test Execution
+##### d. Test Execution
 With the environment correctly set up and the application connected to the test database, Jest runs the test suite. This setup ensures that your tests interact with the intended test database, providing a consistent and isolated environment for accurate testing.
 
-#### Why it's helpful 
+#### (iv) Why it's helpful 
 Running tests on a test database while the `NODE_ENV` environment variable is set to `test` offers several benefits:
 
-##### 1. Isolation
+##### a. Isolation
 It ensures that the tests do not interfere with production data or the development database, maintaining data integrity and preventing accidental data loss or corruption.
 
-##### 2. Consistency
+##### b. Consistency
 By using a dedicated test database, you can ensure that the tests start with a known database state, which is crucial for repeatability and reliability of test results.
 
-##### 3. Performance
+##### c. Performance
 Test databases can be optimized for speed, allowing for faster test execution. This is because they can be smaller and not carry the overhead of production-level data and logging.
 
-##### 4. Safety
+##### d. Safety
 It prevents accidental execution of potentially destructive operations on the production database, such as deletions or updates.
 
-##### 5. Environment-specific Configuration
+##### e. Environment-specific Configuration
 Setting `NODE_ENV` to `test` allows for custom configuration (like database connection strings, logging levels, or third-party service mocks) that are specific to the testing environment, ensuring that tests run under conditions similar to production but without the risk.
 
-##### 6. Dependency Mocking
+##### f. Dependency Mocking
 In a test environment, it's easier to mock external services and integrations, ensuring that the tests are not dependent on external factors and are more focused on the application logic itself.
 
-##### 7. Continuous Integration (CI) Compatibility
+##### g. Continuous Integration (CI) Compatibility
 Using a test database and environment makes it easier to integrate with CI/CD pipelines, ensuring that automated tests can run in an isolated and controlled environment before any code is deployed to production.
 
+### B. `npm start`
 
+  - #### (i) What it does & How it works
+The `npm start` command starts the application by running `node src/server.js`. This command executes the `server.js` file using Node.js, which initializes the server and makes it listen for incoming requests on the configured port.
 
-### `npm start`
+  - #### (ii) When to use it
+Use this command when you want to run your application in a production environment or for general running/testing of your application in its completed form. It's the standard way to start the application without any development tools like `nodemon` or additional debugging capabilities.
 
-- **What it does:** Starts the server normally for production or general development use.
-- **When to use it:** Use this command to start your application in a production environment or when you're not actively developing and just want to run the application.
+### C. `npm run debug`
 
-### `npm run debug`
+  - #### (i) What it does
+Sets the `NODE_ENV` environment variable to `development` and uses `nodemon` for automatic server restarts during development. This means that the server will automatically restart whenever you save changes to your files, ensuring that you are always running the most current version of your application without the need to manually stop and start the server.
 
-- **What it does:** Sets the `NODE_ENV` environment variable to `development` and starts the server with the `nodemon` tool in debug mode (`--inspect`). This allows you to attach a debugger to the running process for more in-depth troubleshooting.
-- **When to use it:** This command is useful when you need to debug your application and want to use a debugger to step through your code.
+  - #### (ii) When to use it
+This command is ideal for use during the development phase of your project. It streamlines the development process by eliminating the need for manual restarts after making changes to your code. This is particularly useful for projects where changes are made frequently and you want to test those changes in real-time.
 
-### `npm run dev`
+### D. `npm run dev`
 
-- **What it does:** Sets the `NODE_ENV` environment variable to `development` and uses `nodemon` for automatic server restarts during development. This means that the server will automatically restart whenever you save changes to your files.
-- **When to use it:** Use this command during development for a smoother workflow. It saves you from having to manually restart the server each time you make changes to your code.
+  - #### (i) What it does
+Sets the `NODE_ENV` environment variable to `development` and uses `nodemon` for automatic server restarts during development. This means that the server will automatically restart whenever you save changes to your files, ensuring that you are always running the most current version of your application without the need to manually stop and start the server.
 
-### `npm run dev:test`
+  - #### (ii) When to use it
+This command is ideal for use during the development phase of your project. It streamlines the development process by eliminating the need for manual restarts after making changes to your code. This is particularly useful for projects where changes are made frequently and you want to test those changes in real-time.
 
-- **What it does:** Similar to `npm run test`, it sets the `NODE_ENV` environment variable to `test` but uses `nodemon` to automatically restart the test suite on file changes.
-- **When to use it:** This command is particularly useful during test-driven development (TDD) or when you are actively working on fixing tests. It provides immediate feedback by re-running tests as soon as you save changes.
+### E. `npm run dev:test`
+
+  - #### (i) What it does
+This command combines the functionality of setting the `NODE_ENV` environment variable to `test` with the utility of `nodemon`. By doing so, it ensures that the application connects to the test database and automatically restarts the test suite whenever file changes are detected. This is achieved by leveraging `nodemon` to watch for file changes and re-execute the tests, providing immediate feedback on the impact of your changes.
+
+  - #### (ii) When to use it
+The `npm run dev:test` command is particularly useful during the development process, especially in scenarios involving test-driven development (TDD) or when actively working on resolving test failures. It facilitates a more efficient development workflow by automatically rerunning tests upon saving changes, thereby providing instant feedback. This command is ideal for developers looking to quickly iterate on their code and tests, ensuring that new changes do not break existing functionality.
